@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-dashboards
+  namespace: prometheus-stack
+  labels:
+    grafana_dashboard: "1"
+data:
+  {{ $currentScope := .}}
+  {{ range $path, $_ :=  .Files.Glob  "**.json" }}
+      {{- with $currentScope}}
+          {{ $path }}: {{ .Files.Get $path | quote }}
+      {{- end }}
+  {{ end }}
